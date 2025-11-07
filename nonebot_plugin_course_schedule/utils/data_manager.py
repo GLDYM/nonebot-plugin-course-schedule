@@ -11,14 +11,14 @@ import json
 from pathlib import Path
 from typing import Dict, List
 
-from ..config import config
+import nonebot_plugin_localstore as store
 
 
 class DataManager:
     """数据管理类"""
 
     def __init__(self):
-        self.data_path: Path = Path(config.course_data_path)
+        self.data_path: Path = Path(store.get_plugin_config_dir())
         self.ics_path: Path = self.data_path / "ics"
         self.user_data_file: Path = self.data_path / "userdata.json"
         self._init_data()
