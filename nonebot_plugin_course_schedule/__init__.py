@@ -20,7 +20,7 @@ __plugin_meta__ = PluginMetadata(
     homepage="https://github.com/GLDYM/nonebot-plugin-course-schedule",
     config=Config,
     supported_adapters={"~onebot.v11"},
-    extra={"author": "Polaris_Light", "version": "1.0.2", "priority": 5},
+    extra={"author": "Polaris_Light", "version": "1.0.3", "priority": 5},
 )
 
 from nonebot import require
