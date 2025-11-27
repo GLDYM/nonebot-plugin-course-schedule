@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>群课表</title>
+    <link rel="stylesheet" href="./group_schedule.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title-icon"></div>
+            <h1>“群友在上什么课?”</h1>
+            <div class="title-underline"></div>
+        </div>
+        <div class="courses-list">
+            {% for course in courses %}
+            <div class="course-item">
+                <div class="avatar-container">
+                    <img src="{{ course.avatar_url }}" alt="Avatar" class="avatar" onerror="this.style.display='none'">
+                </div>
+                <div class="arrow"></div>
+                <div class="course-content">
+                    <div class="nickname">{{ course.nickname }}</div>
+                    <div class="status-badge {{ course.status_class }}">{{ course.status_text }}</div>
+                    <div class="course-details">
+                        <div class="course-info">{{ course.summary }} @ {{ course.location }}</div>
+                        <div class="time-info">{{ course.time_str }} ({{ course.detail_text }})</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

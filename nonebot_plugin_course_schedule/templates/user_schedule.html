@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户课表</title>
+    <link rel="stylesheet" href="./user_schedule.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            {% for line in title_lines %}
+            <h1 class="title-line">{{ line }}</h1>
+            {% endfor %}
+        </div>
+        <div class="courses-list">
+            {% for course in courses %}
+            <div class="course-item">
+                <div class="time">{{ course.time_str }}</div>
+                <div class="course-details">
+                    {% for line in course.detail_lines %}
+                    <div class="course-line">{{ line }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="footer">
+            生成时间: {{ generate_time }}
+        </div>
+    </div>
+</body>
+</html>

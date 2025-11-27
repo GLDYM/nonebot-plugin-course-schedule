@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上课排行榜</title>
+    <link rel="stylesheet" href="./ranking.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>本周上课排行榜</h1>
+            <div class="date-range">{{ date_range }}</div>
+        </div>
+        <div class="ranking-list">
+            {% for rank_data in ranking_data %}
+            <div class="rank-item {% if rank_data.row_index % 2 == 1 %}odd{% endif %}">
+                <div class="rank-number {{ rank_data.rank_class }}">{{ rank_data.rank }}</div>
+                <div class="avatar-container">
+                    <img src="{{ rank_data.avatar_url }}" alt="Avatar" class="avatar" onerror="this.style.display='none'">
+                </div>
+                <div class="nickname">{{ rank_data.nickname }}</div>
+                <div class="duration">{{ rank_data.duration_str }}</div>
+                <div class="count">{{ rank_data.count_str }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

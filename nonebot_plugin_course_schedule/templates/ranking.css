@@ -1,0 +1,102 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Microsoft YaHei", "SimHei", sans-serif;
+    background-color: #FFFFFF;
+    color: #374151;
+}
+
+.container {
+    width: 1200px;
+    padding: 60px;
+    background-color: #FFFFFF;
+}
+
+.header {
+    margin-bottom: 40px;
+}
+
+h1 {
+    margin: 0 0 20px 0;
+    font-size: 48px;
+    color: #1F2937;
+    font-weight: normal;
+}
+
+.date-range {
+    font-size: 24px;
+    color: #6B7280;
+}
+
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.rank-item {
+    display: flex;
+    align-items: center;
+    height: 120px;
+    padding: 0 60px;
+}
+
+.rank-item.odd {
+    background-color: #F9FAFB;
+}
+
+.rank-number {
+    width: 80px;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.rank-number.first {
+    color: #FBBF24;
+}
+
+.rank-number.second {
+    color: #9CA3AF;
+}
+
+.rank-number.third {
+    color: #F59E0B;
+}
+
+.rank-number.other {
+    color: #374151;
+}
+
+.avatar-container {
+    width: 80px;
+    height: 80px;
+    margin: 0 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.nickname {
+    flex: 1;
+    font-size: 28px;
+    color: #374151;
+}
+
+.duration {
+    font-size: 28px;
+    color: #374151;
+    margin-right: 20px;
+}
+
+.count {
+    font-size: 24px;
+    color: #6B7280;
+}

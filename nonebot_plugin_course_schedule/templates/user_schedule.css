@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Microsoft YaHei", "SimHei", sans-serif;
+    background-color: #FFFFFF;
+    color: #333333;
+}
+
+.container {
+    width: 1000px;
+    padding: 40px;
+    background-color: #FFFFFF;
+}
+
+.header {
+    margin-bottom: 40px;
+}
+
+.title-line {
+    margin: 0 0 5px 0;
+    font-size: 40px;
+    color: #000000;
+    font-weight: normal;
+}
+
+.courses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.course-item {
+    display: flex;
+    margin-bottom: 10px;
+    background-color: #E3F2FD;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.time {
+    font-size: 28px;
+    color: #000000;
+    min-width: 180px;
+    margin-right: 20px;
+    padding-top: 15px;
+}
+
+.course-details {
+    flex: 1;
+}
+
+.course-line {
+    font-size: 22px;
+    color: #333333;
+    margin-bottom: 5px;
+}
+
+.course-line:last-child {
+    margin-bottom: 0;
+}
+
+.footer {
+    margin-top: 25px;
+    font-size: 22px;
+    color: #888888;
+    text-align: left;
+}
