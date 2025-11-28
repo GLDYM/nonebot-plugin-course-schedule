@@ -22,7 +22,7 @@ body {
 /* 标题区域 */
 .header {
     position: relative;
-    margin-bottom: 40px;
+    padding-bottom: 20px; /* 标题与课表之间的间距 */
 }
 
 /* 标题左侧装饰条 */
@@ -64,7 +64,7 @@ h1 {
     align-items: center;
     height: auto;
     border-bottom: 1px solid #EEEEEE;
-    padding: 20px 0;
+    padding: 10px 0;
 }
 
 /* 头像容器 */
@@ -107,14 +107,13 @@ h1 {
 .nickname {
     font-size: 35px;
     color: #333333;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 /* 徽章和课程详情容器 */
 .course-details-with-badge {
     display: flex;
     align-items: center;
-    gap: 60px; /* 徽章和课程详情之间的间距 */
 }
 
 /* 状态徽章 */
@@ -127,6 +126,7 @@ h1 {
     font-size: 24px;
     border-radius: 4px;
     flex-shrink: 0; /* 防止压缩变形 */
+    margin-right: 10px; /* 徽章和课程详情之间的间距 */
 }
 
 .status-badge.ongoing {
@@ -160,4 +160,7 @@ h1 {
 .time-info {
     font-size: 24px;
     color: #888888;
+    word-wrap: break-word;
+    max-width: 100%;
+    line-height: 1.4;
 }

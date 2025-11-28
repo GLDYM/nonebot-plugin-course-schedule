@@ -43,13 +43,30 @@ class HTMLImageGenerator:
             
             for course in courses:
                 # 确定课程状态和状态文本
+                time_diff = ""
                 if course.get("start_time") and course.get("end_time"):
                     if course["start_time"] <= now < course["end_time"]:
                         status = "ongoing"
                         status_text = "进行中"
+                        # 计算剩余时间
+                        remaining = course["end_time"] - now
+                        hours = remaining.seconds // 3600
+                        minutes = (remaining.seconds % 3600) // 60
+                        if hours > 0:
+                            time_diff = f"(剩余 {hours} 小时 {minutes} 分钟)"
+                        else:
+                            time_diff = f"(剩余 {minutes} 分钟)"
                     elif now < course["start_time"]:
                         status = "next"
                         status_text = "下一节"
+                        # 计算距离开始时间
+                        until_start = course["start_time"] - now
+                        hours = until_start.seconds // 3600
+                        minutes = (until_start.seconds % 3600) // 60
+                        if hours > 0:
+                            time_diff = f"({hours} 小时 {minutes} 分钟后)"
+                        else:
+                            time_diff = f"({minutes} 分钟后)"
                 else:
                     status = "ended"
                     status_text = "已结束"
@@ -59,8 +76,6 @@ class HTMLImageGenerator:
                     time_str = f"{course['start_time'].strftime('%H:%M')} - {course['end_time'].strftime('%H:%M')}"
                 elif status == "ended":
                     time_str = "今日所有课程已结束"
-                else:
-                    time_str = "时间未知"
                 
                 # 格式化课程信息
                 if course.get("summary") != "今日无课":
@@ -70,7 +85,7 @@ class HTMLImageGenerator:
                 else:
                     course_info = "今日无课"
                 
-                # 构建avatar_url（这里使用默认的占位图，实际应该从user_id获取头像）
+                # 构建avatar_url
                 avatar_url = f"https://q1.qlogo.cn/g?b=qq&nk={course.get('user_id', '')}&s=640"
                 
                 formatted_courses.append({
@@ -79,7 +94,8 @@ class HTMLImageGenerator:
                     "status": status,
                     "status_text": status_text,
                     "course_info": course_info,
-                    "time_info": time_str
+                    "time_info": time_str,
+                    "time_diff": time_diff
                 })
             
             # 准备模板数据
