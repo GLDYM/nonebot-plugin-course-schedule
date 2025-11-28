@@ -21,11 +21,15 @@
                 </div>
                 <div class="arrow"></div>
                 <div class="course-content">
+                    <!-- 昵称 -->
                     <div class="nickname">{{ course.nickname }}</div>
-                    <div class="status-badge {{ course.status }}">{{ course.status_text }}</div>
-                    <div class="course-details">
-                        <div class="course-info">{{ course.course_info }}</div>
-                        <div class="time-info">{{ course.time_info }}</div>
+                    <!-- 课程详情和状态徽章的新布局 -->
+                    <div class="course-details-with-badge">
+                        <div class="status-badge {{ course.status }}">{{ course.status_text }}</div>
+                        <div class="course-details">
+                            <div class="course-info">{{ course.course_info }}</div>
+                            <div class="time-info">{{ course.time_info }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
