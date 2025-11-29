@@ -74,7 +74,6 @@ class DataManager:
             or user_id not in user_data[group_id]
         ):
             return False
-        return True
 
     def get_ics_file_path(self, user_id: int) -> Path:
         """获取用户的 ICS 文件路径"""

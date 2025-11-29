@@ -3,7 +3,6 @@
 本模块负责生成插件所需的各种图片，如图形化课程表和排行榜。
 """
 import asyncio
-import os
 import tempfile
 from datetime import datetime, timezone, timedelta, date
 from io import BytesIO
