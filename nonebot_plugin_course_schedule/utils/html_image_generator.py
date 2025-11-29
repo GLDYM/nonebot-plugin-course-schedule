@@ -123,6 +123,37 @@ class HTMLImageGenerator:
             logger.error(f"生成群课程表图片失败: {e}")
             raise
 
+    def _estimate_char_units(self, text: str) -> int:
+        """估计字符宽度"""
+        count = 0
+        for ch in text:
+            if ch in " @" or ch.isascii():
+                count += 1
+            else:
+                count += 2
+        return count
+
+    def _wrap_text(self, text: str, max_units: int) -> List[str]:
+        """将文本按最大宽度进行切分"""
+        lines = []
+        current_line = ""
+        current_units = 0
+
+        for ch in text:
+            unit = 1 if ch in " @" or ch.isascii() else 2
+            if current_units + unit > max_units:
+                lines.append(current_line)
+                current_line = ch
+                current_units = unit
+            else:
+                current_line += ch
+                current_units += unit
+
+        if current_line:
+            lines.append(current_line)
+
+        return lines
+
     async def generate_user_schedule_image(
         self, courses: List[Dict], nickname: str, date: datetime = None
     ) -> str:
@@ -147,7 +178,19 @@ class HTMLImageGenerator:
                 summary = course.get("summary", "无课程信息")
                 location = course.get("location", "未知地点")
                 teacher = course.get("description", "未知教师")
-                detail_lines = [summary, location, teacher]
+                
+                # 实现与PIL渲染器一致的换行逻辑
+                test_line = f"{summary} @ {location} @ {teacher}"
+                test_wrapped = self._wrap_text(test_line, 66)  # US_ROW_MAX_UNIT = 66
+                
+                if len(test_wrapped) == 1:
+                    # 如果整体长度不长则单行显示
+                    detail_lines = test_wrapped
+                else:
+                    # 否则多行显示
+                    detail_lines = self._wrap_text(summary, 66)
+                    detail_lines += self._wrap_text(location, 66)
+                    detail_lines += self._wrap_text(teacher, 66)
                 
                 formatted_courses.append({
                     "time_str": time_str,
@@ -169,7 +212,7 @@ class HTMLImageGenerator:
                 template_path=self.template_path,
                 template_name="user_schedule.html",
                 templates=template_data,
-                max_width=1000,
+                max_width=1200,
                 device_height=600,
             )
             

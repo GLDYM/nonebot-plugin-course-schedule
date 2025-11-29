@@ -7,17 +7,27 @@
     <link rel="stylesheet" href="./user_schedule.css">
 </head>
 <body>
+    <!-- 页面主容器，固定宽度1200px -->
     <div class="container">
+        <!-- 头部区域，显示标题信息 -->
         <div class="header">
+            <!-- 遍历标题行，支持多行标题 -->
             {% for line in title_lines %}
             <h1 class="title-line">{{ line }}</h1>
             {% endfor %}
         </div>
+        
+        <!-- 课程列表容器 -->
         <div class="courses-list">
+            <!-- 遍历课程数据，生成每个课程项 -->
             {% for course in courses %}
+            <!-- 单个课程项，包含时间和课程详情 -->
             <div class="course-item">
+                <!-- 课程时间 -->
                 <div class="time">{{ course.time_str }}</div>
+                <!-- 课程详情容器 -->
                 <div class="course-details">
+                    <!-- 遍历课程详情行，支持多行显示 -->
                     {% for line in course.detail_lines %}
                     <div class="course-line">{{ line }}</div>
                     {% endfor %}
@@ -25,6 +35,8 @@
             </div>
             {% endfor %}
         </div>
+        
+        <!-- 页脚区域，显示生成时间 -->
         <div class="footer">
             生成时间: {{ generate_time }}
         </div>
