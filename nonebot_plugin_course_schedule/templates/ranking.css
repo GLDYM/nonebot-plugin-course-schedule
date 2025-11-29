@@ -1,3 +1,9 @@
+/*
+ * 排行榜样式文件
+ * 包含页面整体布局和各组件样式定义
+ */
+
+/* 全局样式 */
 body {
     margin: 0;
     padding: 0;
@@ -6,77 +12,95 @@ body {
     color: #374151;
 }
 
+/* 页面主容器，固定宽度1200px */
 .container {
     width: 1200px;
-    padding: 60px;
+    padding: 40px;
     background-color: #FFFFFF;
 }
 
+/* 头部区域，包含标题和日期范围 */
 .header {
-    margin-bottom: 40px;
+    height: 160px;
 }
 
+/* 主标题 */
 h1 {
-    margin: 0 0 20px 0;
+    margin: 0;
     font-size: 48px;
     color: #1F2937;
     font-weight: normal;
 }
 
+/* 日期范围 */
 .date-range {
+    margin-top: 20px;
     font-size: 24px;
     color: #6B7280;
 }
 
-.ranking-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}
-
+/* 单个排行项 */
 .rank-item {
-    display: flex;
-    align-items: center;
     height: 120px;
-    padding: 0 60px;
+    padding: 0 20px 0 0;
+    position: relative;
+    box-sizing: border-box;
+    width: 92.5%;
+    overflow: hidden;
 }
 
+/* 清除浮动，确保排行项正确换行 */
+.rank-item::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* 奇数排行项背景色 */
 .rank-item.odd {
     background-color: #F9FAFB;
 }
 
+/* 排名数字 */
 .rank-number {
     width: 80px;
+    height: 120px;
     text-align: center;
     font-size: 36px;
     font-weight: bold;
+    line-height: 120px;
+    float: left;
 }
 
+/* 第一名颜色 */
 .rank-number.first {
     color: #FBBF24;
 }
 
+/* 第二名颜色 */
 .rank-number.second {
     color: #9CA3AF;
 }
 
+/* 第三名颜色 */
 .rank-number.third {
     color: #F59E0B;
 }
 
+/* 其他排名颜色 */
 .rank-number.other {
     color: #374151;
 }
 
+/* 头像容器 */
 .avatar-container {
     width: 80px;
     height: 80px;
-    margin: 0 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin: 20px 30px 20px 0;
+    float: left;
 }
 
+/* 头像样式 */
 .avatar {
     width: 80px;
     height: 80px;
@@ -84,19 +108,41 @@ h1 {
     object-fit: cover;
 }
 
+/* 昵称 */
 .nickname {
-    flex: 1;
     font-size: 28px;
     color: #374151;
+    line-height: 120px;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-right: 20px;
+    float: left;
+    width: calc(100% - 410px);
 }
 
+/* 右侧信息容器，包含时长和课程数量 */
+.right-info {
+    float: right;
+    text-align: right;
+    margin-top: 25px;
+    width: 200px;
+}
+
+/* 总时长 */
 .duration {
     font-size: 28px;
     color: #374151;
-    margin-right: 20px;
+    text-align: right;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
+/* 课程数量 */
 .count {
     font-size: 24px;
     color: #6B7280;
+    text-align: right;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-top: 10px;
 }

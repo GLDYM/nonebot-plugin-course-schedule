@@ -7,27 +7,43 @@
     <link rel="stylesheet" href="./group_schedule.css">
 </head>
 <body>
+    <!-- 页面主容器，固定宽度1200px -->
     <div class="container">
+        <!-- 头部区域，包含标题和装饰元素 -->
         <div class="header">
+            <!-- 标题左侧装饰条 -->
             <div class="title-icon"></div>
+            <!-- 主标题 -->
             <h1>“群友在上什么课?”</h1>
+            <!-- 标题下划线 -->
             <div class="title-underline"></div>
         </div>
+        
+        <!-- 课程列表 -->
         <div class="courses-list">
+            <!-- 遍历课程数据，生成每个课程项 -->
             {% for course in courses %}
+            <!-- 单个课程项 -->
             <div class="course-item">
+                <!-- 头像容器 -->
                 <div class="avatar-container">
                     <img src="{{ course.avatar_url }}" alt="Avatar" class="avatar" onerror="this.style.display='none'">
                 </div>
+                <!-- 指示箭头 -->
                 <div class="arrow"></div>
+                <!-- 课程内容区域 -->
                 <div class="course-content">
                     <!-- 昵称 -->
                     <div class="nickname">{{ course.nickname }}</div>
                     <!-- 课程详情和状态徽章的新布局 -->
                     <div class="course-details-with-badge">
+                        <!-- 状态徽章，不同状态有不同颜色 -->
                         <div class="status-badge {{ course.status }}">{{ course.status_text }}</div>
+                        <!-- 课程详细信息 -->
                         <div class="course-details">
+                            <!-- 课程信息，包含课程名称和地点 -->
                             <div class="course-info">{{ course.course_info }}</div>
+                            <!-- 时间信息，包含课程时间和剩余时间 -->
                             <div class="time-info">{{ course.time_info }} {{ course.time_diff }}</div>
                         </div>
                     </div>

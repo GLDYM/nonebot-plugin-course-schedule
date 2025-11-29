@@ -7,21 +7,38 @@
     <link rel="stylesheet" href="./ranking.css">
 </head>
 <body>
+    <!-- 页面主容器，固定宽度1200px -->
     <div class="container">
+        <!-- 头部区域，包含标题和日期范围 -->
         <div class="header">
             <h1>本周上课排行榜</h1>
             <div class="date-range">{{ date_range }}</div>
         </div>
+        
+        <!-- 排行榜列表 -->
         <div class="ranking-list">
+            <!-- 遍历排行榜数据，生成每个排行项 -->
             {% for rank_data in ranking_data %}
+            <!-- 排行项，奇数行有背景色 -->
             <div class="rank-item {% if rank_data.row_index % 2 == 1 %}odd{% endif %}">
+                <!-- 排名数字，不同排名有不同颜色 -->
                 <div class="rank-number {{ rank_data.rank_class }}">{{ rank_data.rank }}</div>
+                
+                <!-- 头像容器 -->
                 <div class="avatar-container">
                     <img src="{{ rank_data.avatar_url }}" alt="Avatar" class="avatar" onerror="this.style.display='none'">
                 </div>
+                
+                <!-- 昵称 -->
                 <div class="nickname">{{ rank_data.nickname }}</div>
-                <div class="duration">{{ rank_data.duration_str }}</div>
-                <div class="count">{{ rank_data.count_str }}</div>
+                
+                <!-- 右侧信息，包含时长和课程数量 -->
+                <div class="right-info">
+                    <!-- 总时长 -->
+                    <div class="duration">{{ rank_data.duration_str }}</div>
+                    <!-- 课程数量 -->
+                    <div class="count">{{ rank_data.count_str }}</div>
+                </div>
             </div>
             {% endfor %}
         </div>
