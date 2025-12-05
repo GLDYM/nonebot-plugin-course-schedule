@@ -15,7 +15,7 @@ from nonebot.adapters.onebot.v11 import (
 )
 from ..utils.data_manager import data_manager
 from ..utils.ics_parser import ics_parser
-from ..utils.image_generator import image_generator
+from ..utils.html_image_generator import image_generator
 
 show_today = on_command(
     "show_today",

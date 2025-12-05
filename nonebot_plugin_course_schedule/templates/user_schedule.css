@@ -1,0 +1,80 @@
+/*
+ * 用户课表样式文件
+ * 包含页面整体布局和各组件样式定义
+ */
+
+/* 全局样式 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "CustomFont", "Maple Mono NF CN Medium", "Microsoft YaHei", "SimHei", sans-serif;
+    background-color: #FFFFFF;
+    color: #333333;
+}
+
+/* 页面主容器，固定宽度1200px */
+.container {
+    width: 1200px;
+    padding: 40px;
+    background-color: #FFFFFF;
+}
+
+/* 头部区域样式 */
+.header {
+    margin-bottom: 40px;
+}
+
+/* 标题行样式 */
+.title-line {
+    margin: 0 0 5px 0;
+    font-size: 40px;
+    color: #000000;
+    font-weight: normal;
+    line-height: 1.2;
+}
+
+/* 课程列表容器 */
+.courses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 单个课程项样式 */
+.course-item {
+    background-color: #E3F2FD;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+/* 课程时间样式 */
+.time {
+    font-size: 28px;
+    color: #000000;
+    margin-bottom: 10px;
+    font-weight: normal;
+}
+
+/* 课程详情容器 */
+.course-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* 课程详情行样式 */
+.course-line {
+    font-size: 22px;
+    color: #333333;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* 页脚样式 */
+.footer {
+    margin-top: 25px;
+    font-size: 22px;
+    color: #888888;
+    text-align: left;
+}

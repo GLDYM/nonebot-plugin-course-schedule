@@ -1,0 +1,166 @@
+/*
+ * 课程表样式文件
+ * 包含页面整体布局和各组件样式定义
+ */
+
+/* 全局样式 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "EmojiFont", "CustomFont", "Maple Mono NF CN Medium";
+    background-color: #FFFFFF;
+    color: #333333;
+}
+
+/* 页面主容器 */
+.container {
+    width: 1200px;
+    padding: 40px;
+    background-color: #FFFFFF;
+}
+
+/* 标题区域 */
+.header {
+    position: relative;
+    padding-bottom: 20px; /* 标题与课表之间的间距 */
+}
+
+/* 标题左侧装饰条 */
+.title-icon {
+    position: absolute;
+    width: 20px;
+    height: 60px;
+    background-color: #26A69A;
+    top: 0;
+    left: 0;
+}
+
+/* 主标题 */
+h1 {
+    margin: 0 0 0 40px;
+    font-size: 48px;
+    color: #000000;
+    font-weight: normal;
+}
+
+/* 标题下划线 */
+.title-underline {
+    width: 300px;
+    height: 5px;
+    background-color: #A7FFEB;
+    margin: 20px 0 0 40px;
+}
+
+/* 课程列表容器 */
+.courses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* 单个课程项 */
+.course-item {
+    display: flex;
+    align-items: center;
+    height: auto;
+    border-bottom: 1px solid #EEEEEE;
+    padding: 10px 0;
+}
+
+/* 头像容器 */
+.avatar-container {
+    width: 80px;
+    height: 80px;
+    margin-right: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 用户头像 */
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* 指示箭头 */
+.arrow {
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    border-left: 20px solid #BDBDBD;
+    margin-right: 20px;
+    align-self: center; /* 垂直居中对齐 */
+}
+
+/* 课程内容区域 */
+.course-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 用户昵称 */
+.nickname {
+    font-size: 35px;
+    color: #333333;
+    margin-bottom: 5px;
+}
+
+/* 徽章和课程详情容器 */
+.course-details-with-badge {
+    display: flex;
+    align-items: center;
+}
+
+/* 状态徽章 */
+.status-badge {
+    width: 100px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    border-radius: 4px;
+    flex-shrink: 0; /* 防止压缩变形 */
+    margin-right: 10px; /* 徽章和课程详情之间的间距 */
+}
+
+.status-badge.ongoing {
+    background-color: #D32F2F;
+    color: #FFFFFF;
+}
+
+.status-badge.next {
+    background-color: #1976D2;
+    color: #FFFFFF;
+}
+
+.status-badge.ended {
+    background-color: #388E3C;
+    color: #FFFFFF;
+}
+
+/* 课程详细信息 */
+.course-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.course-info {
+    font-size: 24px;
+    color: #333333;
+    margin-bottom: 5px;
+}
+
+.time-info {
+    font-size: 24px;
+    color: #888888;
+    word-wrap: break-word;
+    max-width: 100%;
+    line-height: 1.4;
+}
