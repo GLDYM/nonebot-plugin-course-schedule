@@ -78,7 +78,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
         return
 
     ranking_data.sort(key=lambda x: x["total_duration"], reverse=True)
-    image_path = await image_generator.generate_ranking_image(
+    image_bytes = await image_generator.generate_ranking_image(
         ranking_data, start_of_week, end_of_week
     )
-    await weekly_ranking.send(MessageSegment.image(image_path))
+    await weekly_ranking.send(MessageSegment.image(image_bytes))
