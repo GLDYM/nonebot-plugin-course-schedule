@@ -3,7 +3,6 @@
 本模块负责生成插件所需的各种图片，如图形化课程表和排行榜。
 """
 import asyncio
-import tempfile
 from datetime import datetime, timezone, timedelta, date
 from io import BytesIO
 from typing import Dict, List
@@ -121,8 +120,8 @@ class ImageGenerator:
 
         return lines
     
-    async def generate_schedule_image(self, courses: List[Dict]) -> str:
-        """生成课程表图片并返回临时文件路径"""
+    async def generate_schedule_image(self, courses: List[Dict]) -> bytes:
+        """生成课程表图片并返回字节数据"""
         height = c.GS_PADDING * 2 + 120 + len(courses) * c.GS_ROW_HEIGHT
         image = Image.new("RGB", (c.GS_WIDTH, height), c.GS_BG_COLOR)
         draw = ImageDraw.Draw(image)
@@ -260,17 +259,15 @@ class ImageGenerator:
 
             y_offset += c.GS_ROW_HEIGHT
 
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-        temp_path = temp_file.name
-        image.save(temp_path, format="PNG")
-        temp_file.close()
-
-        return temp_path
+        # 转换为字节数据
+        img_stream = BytesIO()
+        image.save(img_stream, format="PNG")
+        return img_stream.getvalue()
 
     async def generate_user_schedule_image(
         self, courses: List[Dict], nickname: str, date: datetime = None 
-    ) -> str:
-        """为单个用户生成今日课程表图片"""
+    ) -> bytes:
+        """为单个用户生成今日课程表图片并返回字节数据"""
         day: str = date.strftime("%m-%d ") if date else "今日"
         weekday: int = date.weekday() if date else datetime.now(timezone(timedelta(hours=8))).weekday()
         weeklist = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
@@ -378,17 +375,15 @@ class ImageGenerator:
             fill=c.US_SUBTITLE_COLOR,
         )
 
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-        temp_path = temp_file.name
-        image.save(temp_path, format="PNG")
-        temp_file.close()
-
-        return temp_path
+        # 转换为字节数据
+        img_stream = BytesIO()
+        image.save(img_stream, format="PNG")
+        return img_stream.getvalue()
 
     async def generate_ranking_image(
         self, ranking_data: List[Dict], start_date: date, end_date: date
-    ) -> str:
-        """生成排行榜图片"""
+    ) -> bytes:
+        """生成排行榜图片并返回字节数据"""
         height = (
             c.RANKING_HEADER_HEIGHT
             + len(ranking_data) * c.RANKING_ROW_HEIGHT
@@ -514,11 +509,10 @@ class ImageGenerator:
 
             y_offset += c.RANKING_ROW_HEIGHT
 
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
-        temp_path = temp_file.name
-        image.save(temp_path, format="PNG")
-        temp_file.close()
-        return temp_path
+        # 转换为字节数据
+        img_stream = BytesIO()
+        image.save(img_stream, format="PNG")
+        return img_stream.getvalue()
 
 
 image_generator = ImageGenerator()

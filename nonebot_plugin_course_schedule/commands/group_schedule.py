@@ -121,5 +121,5 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
         return None
 
     next_courses.sort(key=lambda x: (x["start_time"] is None, x["start_time"]))
-    image_path = await image_generator.generate_schedule_image(next_courses)
-    await group_schedule.send(MessageSegment.image(image_path))
+    image_bytes = await image_generator.generate_schedule_image(next_courses)
+    await group_schedule.send(MessageSegment.image(image_bytes))

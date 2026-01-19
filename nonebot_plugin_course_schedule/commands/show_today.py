@@ -106,7 +106,7 @@ async def _(
     for course in filtered_courses:
         course["nickname"] = nickname
 
-    image_path = (
+    image_bytes = (
         await image_generator.generate_user_schedule_image(filtered_courses, nickname)
         if mode == "today"
         else await image_generator.generate_user_schedule_image(
@@ -114,4 +114,4 @@ async def _(
         )
     )
 
-    await show_today.finish(MessageSegment.image(image_path))
+    await show_today.finish(MessageSegment.image(image_bytes))
