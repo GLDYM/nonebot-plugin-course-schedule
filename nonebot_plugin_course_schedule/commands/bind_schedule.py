@@ -71,7 +71,8 @@ async def handle_schedule_input(
 ):
     group_id = event.group_id if isinstance(event, GroupMessageEvent) else None
     user_id = event.user_id
-    scheduler.remove_job(f"expire_bind_request_{user_id}")
+    if scheduler.get_job(f"expire_bind_request_{user_id}"):
+        scheduler.remove_job(f"expire_bind_request_{user_id}")
 
     # await matcher.send(f"Arg: {str(schedule_input)}")
 
