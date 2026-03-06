@@ -49,8 +49,8 @@ from .utils.reminder import check_and_send_reminders
 
 scheduler.add_job(
     check_and_send_reminders,
-    trigger="cron",
-    minute=f"*/{config.course_reminder_interval}",
+    trigger="interval",
+    minutes=config.course_reminder_interval,
     id="course_schedule_reminder",
     replace_existing=True,
 )
