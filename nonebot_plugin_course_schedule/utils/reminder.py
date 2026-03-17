@@ -57,7 +57,7 @@ async def check_and_send_reminders():
                     # 匹配成功，发送提醒
                     summary = course["summary"]
                     location = course.get("location", "未知地点")
-                    minutes_left = math.ceil((start_time - reminder_time).total_seconds() / 60)
+                    minutes_left = math.ceil((start_time - now).total_seconds() / 60)
                     
                     msg = (
                         MessageSegment.at(user_id) + 
