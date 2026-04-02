@@ -39,7 +39,7 @@ binding_requests = {}
 
 
 @bind_schedule.handle()
-async def handle_bind_entry(event: Union[GroupMessageEvent, PrivateMessageEvent]):
+async def handle_bind_entry(matcher: Matcher, event: Union[GroupMessageEvent, PrivateMessageEvent]):
     user_id = event.user_id
 
     async def timeout():
