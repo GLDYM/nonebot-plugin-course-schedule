@@ -1,7 +1,6 @@
 import os
 import shlex
 from datetime import datetime, time, timezone, timedelta
-from dateutil import parser
 
 from nonebot import on_command, logger
 from nonebot.adapters import Message
@@ -9,6 +8,7 @@ from nonebot.params import CommandArg
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, MessageSegment
 
 from ..utils.data_manager import data_manager
+from ..utils.date_parser import DateParseError, parse_schedule_date_arg
 from ..utils.ics_parser import ics_parser
 from ..utils.image_generator import image_generator
 
@@ -34,30 +34,20 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
 
     args = shlex.split(arg.extract_plain_text())
     logger.info(f"{group_id} 查询群课表: {args}")
-    day = args[0].replace(".", "-") if args and args != [] else ""
+    day = args[0] if args else ""
 
     shanghai_tz = timezone(timedelta(hours=8))
     now = datetime.now(shanghai_tz)
 
     try:
-        if day == "":
+        target_date, mode = parse_schedule_date_arg(day, now)
+        if mode == "today":
             target_time = now
-            target_date = now.date()
-        elif day.isdigit():
-            offset_days = int(day)
-            target_date = now.date() + timedelta(days=offset_days)
-            target_time = datetime.combine(now.date(), time.min).astimezone(
-                shanghai_tz
-            ) + timedelta(seconds=1)
         else:
-            target_time = parser.parse(day)
-            target_date = target_time.date()
-            target_time = datetime.combine(now.date(), time.min).astimezone(
-                shanghai_tz
-            ) + timedelta(seconds=1)
-    except Exception:
+            target_time = datetime.combine(target_date, time.min, tzinfo=shanghai_tz)
+    except DateParseError:
         await group_schedule.finish(
-            "时间格式错误，请输入数字或日期，例如：3 或 2025-11-01"
+            "时间格式错误，请输入天数偏移或单日日期，例如：1、明天、下周三、4月2号"
         )
 
     next_courses = []
