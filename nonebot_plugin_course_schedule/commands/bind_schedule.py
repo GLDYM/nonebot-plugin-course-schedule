@@ -39,9 +39,7 @@ binding_requests = {}
 
 
 @bind_schedule.handle()
-async def handle_bind_entry(
-    matcher: Matcher, event: Union[GroupMessageEvent, PrivateMessageEvent]
-):
+async def handle_bind_entry(event: Union[GroupMessageEvent, PrivateMessageEvent]):
     user_id = event.user_id
 
     async def timeout():
@@ -59,10 +57,9 @@ async def handle_bind_entry(
         replace_existing=True,
     )
 
-    await matcher.send("请在60秒内发送你的 .ics 文件或 WakeUp 分享口令。")
-
-
-@bind_schedule.got("schedule_input", prompt="等待你的课表文件或口令中…")
+@bind_schedule.got(
+    "schedule_input", prompt="请在60秒内发送你的 .ics 文件或 WakeUp 分享口令。"
+)
 async def handle_schedule_input(
     bot: Bot,
     matcher: Matcher,
