@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "nonebot-plugin-course-schedule"
-version = "1.2.0"
+version = "1.2.1"
 description = "电子课程表"
 authors = [
     {name = "Polaris_Light", email = "995905922@qq.com" },
