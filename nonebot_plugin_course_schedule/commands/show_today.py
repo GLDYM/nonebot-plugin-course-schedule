@@ -71,18 +71,7 @@ async def _(
         await show_today.finish("当日没有课啦！")
 
     filtered_courses.sort(key=lambda x: x["start_time"])
-
-    # 那是谁？是谁？是谁？ 那是复旦，复旦教务，复旦教务~
-    merged_courses = []
-    seen = {}
-    for course in filtered_courses:
-        key = (course["summary"], course["start_time"], course["end_time"])
-        if key in seen:
-            seen[key]["location"] += f", {course['location']}"
-        else:
-            seen[key] = course
-            merged_courses.append(course)
-    filtered_courses = merged_courses
+    filtered_courses = ics_parser.merge_duplicate_courses(filtered_courses)
 
     if group_id:
         user_info = await bot.get_group_member_info(group_id=group_id, user_id=user_id)

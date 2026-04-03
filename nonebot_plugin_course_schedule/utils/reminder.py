@@ -48,9 +48,12 @@ async def check_and_send_reminders():
                 logger.error(f"解析用户 {user_id} 的课表失败: {e}")
                 continue
             
+            courses = ics_parser.merge_duplicate_courses(courses)
+
             for course in courses:
+
                 start_time = course["start_time"]
-                
+                                
                 # 检查课程是否在 reminder_time 到 reminder_time_end 之间开始
                 if (reminder_time <= start_time < reminder_time_end):
                     

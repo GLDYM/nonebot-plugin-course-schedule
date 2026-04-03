@@ -38,18 +38,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
         except Exception:
             continue
 
+        courses = ics_parser.merge_duplicate_courses(courses)
+
         total_duration = timedelta()
         course_count = 0
-        seen = {}
 
         for course in courses:
-            # 那是谁？是谁？是谁？ 那是复旦，复旦教务，复旦教务~
-            key = (course["summary"], course["start_time"], course["end_time"])
-            if key in seen:
-                continue
-            else:
-                seen[key] = course
-
             course_date = course["start_time"].date()
             if start_of_week <= course_date <= end_of_week:
                 total_duration += course["end_time"] - course["start_time"]

@@ -108,6 +108,31 @@ class ICSParser:
         self.course_cache[file_path] = courses
         return courses
 
+    def merge_duplicate_courses(self, courses: List[Dict]) -> List[Dict]:
+        """按课程标题和时间合并重复课程，并拼接重复课程的地点信息。"""
+        merged_courses: List[Dict] = []
+        seen: Dict = {}
+
+        for course in courses:
+            key = (course.get("summary"), course.get("start_time"), course.get("end_time"))
+            if key in seen:
+                existing_course = seen[key]
+                new_location = course.get("location")
+                existing_location = existing_course.get("location")
+
+                if new_location and new_location not in {existing_location, ""}:
+                    if existing_location:
+                        existing_course["location"] = f"{existing_location}, {new_location}"
+                    else:
+                        existing_course["location"] = new_location
+                continue
+
+            merged_course = course.copy()
+            seen[key] = merged_course
+            merged_courses.append(merged_course)
+
+        return merged_courses
+
     def clear_cache(self, file_path: str):
         """清除指定文件的缓存"""
         self.course_cache.pop(file_path, None)
