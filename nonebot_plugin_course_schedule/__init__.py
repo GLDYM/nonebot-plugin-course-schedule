@@ -20,7 +20,7 @@ __plugin_meta__ = PluginMetadata(
     homepage="https://github.com/GLDYM/nonebot-plugin-course-schedule",
     config=Config,
     supported_adapters={"~onebot.v11"},
-    extra={"author": "Polaris_Light", "version": "1.1.0", "priority": 5},
+    extra={"author": "Polaris_Light", "version": "1.2.1", "priority": 5},
 )
 
 from nonebot import require
@@ -49,8 +49,8 @@ from .utils.reminder import check_and_send_reminders
 
 scheduler.add_job(
     check_and_send_reminders,
-    "course_schedule_reminder",
-    minute=f"*/{config.course_reminder_interval}",
+    trigger="interval",
+    minutes=config.course_reminder_interval,
     id="course_schedule_reminder",
     replace_existing=True,
 )

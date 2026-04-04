@@ -1,7 +1,6 @@
 import os
 import shlex
 from datetime import datetime, timezone, timedelta
-from dateutil import parser
 from typing import Union
 
 from nonebot import on_command, logger
@@ -14,6 +13,7 @@ from nonebot.adapters.onebot.v11 import (
     MessageSegment,
 )
 from ..utils.data_manager import data_manager
+from ..utils.date_parser import DateParseError, parse_schedule_date_arg
 from ..utils.ics_parser import ics_parser
 from ..utils.image_generator import image_generator
 
@@ -37,25 +37,17 @@ async def _(
 
     args = shlex.split(arg.extract_plain_text())
     logger.info(f"{user_id} 查询课表: {args}")
-    day = args[0].replace(".", "-") if args and args != [] else ""
+    day = args[0] if args else ""
 
     shanghai_tz = timezone(timedelta(hours=8))
     now = datetime.now(shanghai_tz)
 
     try:
-        if day == "":
-            target_date = now.date()
-            mode = "today"
-        elif day.isdigit():
-            offset_days = int(day)
-            target_date = now.date() + timedelta(days=offset_days)
-            mode = "offset"
-        else:
-            target_time = parser.parse(day)
-            target_date = target_time.date()
-            mode = "specific"
-    except Exception:
-        await show_today.finish("时间格式错误，请输入数字或日期，例如：3 或 2025-11-01")
+        target_date, mode = parse_schedule_date_arg(day, now)
+    except DateParseError:
+        await show_today.finish(
+            "时间格式错误，请输入天数偏移或单日日期，例如：1、明天、下周三、4月2号"
+        )
 
     ics_path = data_manager.get_ics_file_path(user_id)
     if not os.path.exists(ics_path):
@@ -79,18 +71,7 @@ async def _(
         await show_today.finish("当日没有课啦！")
 
     filtered_courses.sort(key=lambda x: x["start_time"])
-
-    # 那是谁？是谁？是谁？ 那是复旦，复旦教务，复旦教务~
-    merged_courses = []
-    seen = {}
-    for course in filtered_courses:
-        key = (course["summary"], course["start_time"], course["end_time"])
-        if key in seen:
-            seen[key]["location"] += f", {course['location']}"
-        else:
-            seen[key] = course
-            merged_courses.append(course)
-    filtered_courses = merged_courses
+    filtered_courses = ics_parser.merge_duplicate_courses(filtered_courses)
 
     if group_id:
         user_info = await bot.get_group_member_info(group_id=group_id, user_id=user_id)
