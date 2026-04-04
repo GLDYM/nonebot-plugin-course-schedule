@@ -20,6 +20,39 @@ class ICSParser:
     def __init__(self):
         self.course_cache: Dict[str, List[Dict]] = {}
 
+    def _to_local_datetime(self, value, target_tz: timezone) -> datetime:
+        """将 ICS 属性值统一转换为带时区的 datetime。"""
+        if isinstance(value, date) and not isinstance(value, datetime):
+            value = datetime.combine(value, dt_time.min)
+
+        if not isinstance(value, datetime):
+            raise ValueError(f"Unsupported datetime value type: {type(value)}")
+
+        return (
+            value.astimezone(target_tz)
+            if value.tzinfo
+            else value.replace(tzinfo=target_tz)
+        )
+
+    def _extract_datetime_values(self, prop_value, target_tz: timezone) -> List[datetime]:
+        """从 RDATE/EXDATE 等 ICS 属性中提取 datetime 列表。"""
+        if not prop_value:
+            return []
+
+        values = prop_value if isinstance(prop_value, list) else [prop_value]
+        results: List[datetime] = []
+
+        for value in values:
+            if hasattr(value, "dts"):
+                for dt_item in value.dts:
+                    results.append(self._to_local_datetime(dt_item.dt, target_tz))
+            elif hasattr(value, "dt"):
+                results.append(self._to_local_datetime(value.dt, target_tz))
+            else:
+                results.append(self._to_local_datetime(value, target_tz))
+
+        return results
+
     def parse_ics_file(self, file_path: str) -> List[Dict]:
         """解析 .ics 文件并返回课程列表，包括重复事件。使用缓存以提高性能。"""
         #if file_path in self.course_cache: # TODO: 这里的缓存有时候清理不掉，原因不明。此外性能瓶颈不在这里。
@@ -35,6 +68,12 @@ class ICSParser:
 
         cal = Calendar.from_ical(cal_content)
         shanghai_tz = timezone(timedelta(hours=8))
+        start_of_today_utc = datetime.now(timezone.utc).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
+        # 通常而言，一个学期的长度不会超过 24 周，也不会有人闲得无聊查那么久
+        history_limit_utc = start_of_today_utc - timedelta(days=180)
+        future_limit_utc = start_of_today_utc + timedelta(days=180)
 
         for component in cal.walk():
             if component.name == "VEVENT":
@@ -42,49 +81,84 @@ class ICSParser:
                 description = component.get("description")
                 location = component.get("location")
                 dtstart = component.get("dtstart").dt
-                dtend = component.get("dtend").dt
-                rrule_str = component.get("rrule")
+                dtend_prop = component.get("dtend")
+                duration_prop = component.get("duration")
+                
+                rrule_prop = component.get("rrule")
+                rdate_prop = component.get("rdate")
+                exdate_prop = component.get("exdate")
+                exrule_prop = component.get("exrule")
 
-                if isinstance(dtstart, date) and not isinstance(dtstart, datetime):
-                    dtstart = datetime.combine(dtstart, dt_time.min)
-                if isinstance(dtend, date) and not isinstance(dtend, datetime):
-                    dtend = datetime.combine(dtend, dt_time.min)
+                dtstart = self._to_local_datetime(dtstart, shanghai_tz)
 
-                dtstart = (
-                    dtstart.astimezone(shanghai_tz)
-                    if dtstart.tzinfo
-                    else dtstart.replace(tzinfo=shanghai_tz)
-                )
-                dtend = (
-                    dtend.astimezone(shanghai_tz)
-                    if dtend.tzinfo
-                    else dtend.replace(tzinfo=shanghai_tz)
-                )
+                if dtend_prop:
+                    dtend = self._to_local_datetime(dtend_prop.dt, shanghai_tz)
+                elif duration_prop:
+                    dtend = dtstart + duration_prop.dt
+                else:
+                    dtend = dtstart
 
                 course_duration = dtend - dtstart
 
-                if rrule_str:
-                    if "UNTIL" in rrule_str:
-                        until_dt = rrule_str["UNTIL"][0]
-                        if isinstance(until_dt, date) and not isinstance(
-                            until_dt, datetime
+                has_recurrence = bool(rrule_prop or rdate_prop)
+
+                if has_recurrence:
+                    included_occurrences_utc = {
+                        dtstart.astimezone(timezone.utc)
+                    }
+
+                    # 处理 RRULE
+                    if rrule_prop:
+                        if "UNTIL" in rrule_prop:
+                            until_dt = rrule_prop["UNTIL"][0]
+                            if isinstance(until_dt, date) and not isinstance(
+                                until_dt, datetime
+                            ):
+                                until_dt = datetime.combine(until_dt, dt_time.max)
+                            if until_dt.tzinfo is None:
+                                until_dt = until_dt.replace(tzinfo=shanghai_tz)
+                            rrule_prop["UNTIL"][0] = until_dt.astimezone(timezone.utc)
+
+                        dtstart_utc = dtstart.astimezone(timezone.utc)
+                        rrule = rrulestr(
+                            rrule_prop.to_ical().decode(), dtstart=dtstart_utc
+                        )
+
+                        for occurrence_utc in rrule.between(
+                            history_limit_utc, future_limit_utc, inc=True
                         ):
-                            until_dt = datetime.combine(until_dt, dt_time.max)
-                        if until_dt.tzinfo is None:
-                            until_dt = until_dt.replace(tzinfo=shanghai_tz)
-                        rrule_str["UNTIL"][0] = until_dt.astimezone(timezone.utc)
+                            included_occurrences_utc.add(occurrence_utc)
 
-                    dtstart_utc = dtstart.astimezone(timezone.utc)
-                    rrule = rrulestr(rrule_str.to_ical().decode(), dtstart=dtstart_utc)
+                    # 处理 RDATE
+                    for rdate_dt in self._extract_datetime_values(rdate_prop, shanghai_tz):
+                        included_occurrences_utc.add(rdate_dt.astimezone(timezone.utc))
 
-                    start_of_today_utc = datetime.now(timezone.utc).replace(
-                        hour=0, minute=0, second=0, microsecond=0
-                    )
-                    future_limit_utc = start_of_today_utc + timedelta(days=365)
+                    # 处理 EXDATE
+                    excluded_occurrences_utc = set()
+                    for exdate_dt in self._extract_datetime_values(exdate_prop, shanghai_tz):
+                        excluded_occurrences_utc.add(exdate_dt.astimezone(timezone.utc))
 
-                    for occurrence_utc in rrule.between(
-                        start_of_today_utc, future_limit_utc, inc=True
-                    ):
+                    # 处理 EXRULE，说实话很少见到
+                    if exrule_prop:
+                        exrule_values = (
+                            exrule_prop if isinstance(exrule_prop, list) else [exrule_prop]
+                        )
+                        for exrule_value in exrule_values:
+                            exrule = rrulestr(
+                                exrule_value.to_ical().decode(),
+                                dtstart=dtstart.astimezone(timezone.utc),
+                            )
+                            for excluded_utc in exrule.between(
+                                history_limit_utc, future_limit_utc, inc=True
+                            ):
+                                excluded_occurrences_utc.add(excluded_utc)
+
+                    for occurrence_utc in sorted(included_occurrences_utc):
+                        if not (history_limit_utc <= occurrence_utc <= future_limit_utc):
+                            continue
+                        if occurrence_utc in excluded_occurrences_utc:
+                            continue
+
                         occurrence_local = occurrence_utc.astimezone(shanghai_tz)
                         courses.append(
                             {
