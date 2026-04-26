@@ -58,7 +58,7 @@ async def handle_bind_entry(matcher: Matcher, event: Union[GroupMessageEvent, Pr
     )
 
 @bind_schedule.got(
-    "schedule_input", prompt="请在60秒内发送你的 .ics 文件或 WakeUp 分享口令。"
+    "schedule_input", prompt="请在60秒内发送你的 .ics 文件。"
 )
 async def handle_schedule_input(
     bot: Bot,
@@ -74,33 +74,33 @@ async def handle_schedule_input(
     # await matcher.send(f"Arg: {str(schedule_input)}")
 
     # Wake Up Token
-    token = ics_parser.parse_wakeup_token(str(schedule_input))
-    if token:
-        try:
-            json_data = await ics_parser.fetch_wakeup_schedule(token)
+    # token = ics_parser.parse_wakeup_token(str(schedule_input))
+    # if token:
+    #     try:
+    #         json_data = await ics_parser.fetch_wakeup_schedule(token)
 
-            if not json_data:
-                await matcher.send(
-                    "无法获取 WakeUp 课程表数据，请检查口令是否正确或已过期。"
-                )
-                return None
-            ics_content = ics_parser.convert_wakeup_to_ics(json_data)
-            if not ics_content:
-                await matcher.send("课程表数据解析失败，无法生成 ICS 文件。")
-                return None
-            ics_path = data_manager.get_ics_file_path(user_id)
-            with open(ics_path, "w", encoding="utf-8") as f:
-                f.write(ics_content)
+    #         if not json_data:
+    #             await matcher.send(
+    #                 "无法获取 WakeUp 课程表数据，请检查口令是否正确或已过期。"
+    #             )
+    #             return None
+    #         ics_content = ics_parser.convert_wakeup_to_ics(json_data)
+    #         if not ics_content:
+    #             await matcher.send("课程表数据解析失败，无法生成 ICS 文件。")
+    #             return None
+    #         ics_path = data_manager.get_ics_file_path(user_id)
+    #         with open(ics_path, "w", encoding="utf-8") as f:
+    #             f.write(ics_content)
 
-            if group_id:
-                data_manager.add_user_to_group(user_id, group_id)
+    #         if group_id:
+    #             data_manager.add_user_to_group(user_id, group_id)
 
-            ics_parser.clear_cache(ics_path)
-            await matcher.send("通过 WakeUp 口令绑定课表成功！")
-            return None
-        except Exception as e:
-            await matcher.finish(f"处理 WakeUp 口令失败: {e}")
-            logger.error(e)
+    #         ics_parser.clear_cache(ics_path)
+    #         await matcher.send("通过 WakeUp 口令绑定课表成功！")
+    #         return None
+    #     except Exception as e:
+    #         await matcher.finish(f"处理 WakeUp 口令失败: {e}")
+    #         logger.error(e)
 
     # .ics 文件上传
     for seg in schedule_input:
@@ -136,7 +136,7 @@ async def handle_schedule_input(
             return
 
     await matcher.finish(
-        "未识别的口令或文件格式，请确认是否为 WakeUp 分享口令或 .ics 文件。"
+        "未识别的文件格式，请确认是否为 .ics 文件。"
     )
 
 
