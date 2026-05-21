@@ -30,7 +30,8 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
         await group_schedule.send("本群还没有人绑定课表哦~")
         return None
 
-    user_ids = user_data[str(group_id)]
+    group_id_str = str(group_id)
+    user_ids = list(user_data[group_id_str])
 
     args = shlex.split(arg.extract_plain_text())
     logger.info(f"{group_id} 查询群课表: {args}")
@@ -62,6 +63,9 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
         except Exception:
             continue
 
+        if not courses:
+            continue
+
         today_courses = [c for c in courses if c["start_time"].date() == target_date]
         current = next_ = None
 
@@ -74,7 +78,16 @@ async def _(bot: Bot, event: GroupMessageEvent, arg: Message = CommandArg()):
                     next_ = course
 
         display = current or next_
-        user_info = await bot.get_group_member_info(group_id=group_id, user_id=user_id)
+        try:
+            user_info = await bot.get_group_member_info(group_id=group_id, user_id=user_id)
+        except Exception as e:
+            logger.warning(f"获取群 {group_id} 成员 {user_id} 信息失败，已从群课表中移除: {e}")
+            if user_id in user_data.get(group_id_str, []):
+                user_data[group_id_str].remove(user_id)
+                if not user_data[group_id_str]:
+                    del user_data[group_id_str]
+                data_manager.save_user_data(user_data)
+            continue
         nickname = (
             user_info["card"]
             if user_info["card"] is not None and user_info["card"] != ""
